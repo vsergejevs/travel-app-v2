@@ -1,2 +1,3 @@
 # travel-app-v2
-Travel application version 2. made with node, express
+Travel application version 2. 
+Made with node, express, mongodb, mongoose
