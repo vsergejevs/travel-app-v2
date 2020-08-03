@@ -1,2 +1,2 @@
-Travel application version 2.
+Travel application v2  
 Made with node, express, mongodb, mongoose
