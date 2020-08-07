@@ -1,20 +1,36 @@
-const express = require('express');
 const fs = require('fs'); // filesystem
+const express = require('express');
 
 const app = express();
 
-const tours = JSON.parse(
+const localTours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+);
+
+const localUsers = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/users.json`)
 );
 
 // ROUTING
 
-app.get('api/v1/tours', (req, res) => {
+app.get('/api/v1/tours', (req, res) => {
   // (req, res) - route handler function
   res.status(200).json({
     status: 'success',
+    results: localTours.length,
     data: {
-      tours: tours, // in ES6 if a key and value has the same name, only one can be specified
+      tours: localTours, // in ES6 if a key and value has the same name, only one can be specified
+    },
+  });
+});
+
+app.get('/api/v1/users', (req, res) => {
+  // (req, res) - route handler function
+  res.status(200).json({
+    status: 'success',
+    results: localUsers.length,
+    data: {
+      users: localUsers, // in ES6 if a key and value has the same name, only one can be specified
     },
   });
 });
