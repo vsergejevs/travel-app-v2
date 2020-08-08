@@ -1,7 +1,8 @@
 const fs = require('fs'); // filesystem
 const express = require('express');
-
 const app = express();
+
+app.use(express.json()); // middleware - modifys incoming request data. Here data from the body is added to the request object
 
 const localTours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
@@ -19,7 +20,7 @@ app.get('/api/v1/tours', (req, res) => {
     status: 'success',
     results: localTours.length,
     data: {
-      tours: localTours, // in ES6 if a key and value has the same name, only one can be specified
+      tours: localTours, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
     },
   });
 });
@@ -33,6 +34,30 @@ app.get('/api/v1/users', (req, res) => {
       users: localUsers, // in ES6 if a key and value has the same name, only one can be specified
     },
   });
+});
+
+app.post('/api/v1/tours', (req, res) => {
+  console.log(req.body);
+
+  const newId = localTours[localTours.length - 1].id + 1; // generate new id as a next number of last tour object id
+  const newTour = Object.assign({ id: newId }, req.body); // creates a new tour object
+
+  localTours.push(newTour); // push newly created tour to localTours array
+
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(localTours),
+    (err) => {
+      res.status(201).json({
+        status: 'success',
+        data: {
+          tour: newTour,
+        },
+      });
+    }
+  );
+
+  //res.send('Done'); //  always have to send something to finish request response cycle
 });
 
 // app.get('/', (req, res) => {
