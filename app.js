@@ -14,7 +14,8 @@ const localUsers = JSON.parse(
 
 // ROUTING
 
-app.get('/api/v1/tours', (req, res) => {
+// HANDLER FUNCTIONS
+const getAllTours = (req, res) => {
   // (req, res) - route handler function
   res.status(200).json({
     status: 'success',
@@ -23,20 +24,9 @@ app.get('/api/v1/tours', (req, res) => {
       tours: offlineTours, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
     },
   });
-});
+};
 
-app.get('/api/v1/users', (req, res) => {
-  // (req, res) - route handler function
-  res.status(200).json({
-    status: 'success',
-    results: localUsers.length,
-    data: {
-      users: localUsers, // in ES6 if a key and value has the same name, only one can be specified
-    },
-  });
-});
-
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req, res) => {
   console.log(req.body);
 
   const newId = offlineTours[offlineTours.length - 1].id + 1; // generate new id as a next number of last tour object id
@@ -56,27 +46,10 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-
   //res.send('Done'); //  always have to send something to finish request response cycle
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
-  if (req.params.id * 1 > offlineTours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here...>',
-    },
-  });
-});
-
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req, res) => {
   console.log(req.params);
 
   const id = req.params.id * 1; // convert string to number
@@ -98,8 +71,74 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tours: tour, // in ES6 if a key and value has the same name, only one can be specified
     },
   });
-});
+};
 
+const updateTour = (req, res) => {
+  if (req.params.id * 1 > offlineTours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here...>',
+    },
+  });
+};
+
+const deleteTour = (req, res) => {
+  if (req.params.id * 1 > offlineTours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(204).json({
+    //  204 - no content
+    status: 'success',
+    data: null,
+  });
+};
+
+const getUsers = (req, res) => {
+  // (req, res) - route handler function
+  res.status(200).json({
+    status: 'success',
+    results: localUsers.length,
+    data: {
+      users: localUsers, // in ES6 if a key and value has the same name, only one can be specified
+    },
+  });
+};
+
+// ROUTES
+// New version with chaining requests to route
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+app
+  .route('/api/v1/tours/:id')
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
+app.route('/api/v1/users').get(getUsers);
+
+// Old version
+// app.get('/api/v1/tours', getAllTours);
+// app.post('/api/v1/tours', createTour);
+// app.get('/api/v1/tours/:id', getTour);
+
+// Dummy PATCH request just to show how it should be done
+// app.patch('/api/v1/tours/:id', updateTour);
+
+// Dummy DELETE request just to show how it should be done
+// app.delete('/api/v1/tours/:id', deleteTour);
+
+// app.get('/api/v1/users', getUsers);
+
+// FIRST DRAFT of GET request, not needed anymore
 // app.get('/', (req, res) => {
 //   // req and res are objects
 //   // res.status(200).send('Hello World');   // res is an object    status() is a method     send() is a method
