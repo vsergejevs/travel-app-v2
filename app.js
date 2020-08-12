@@ -1,6 +1,11 @@
 const fs = require('fs'); // filesystem
 const express = require('express');
+const morgan = require('morgan');
+
 const app = express();
+
+// MIDDLEWARES
+app.use(morgan('dev'));
 
 app.use(express.json()); // middleware - modifys incoming request data. Here data from the body is added to the request object
 
@@ -119,7 +124,7 @@ const deleteTour = (req, res) => {
   });
 };
 
-const getUsers = (req, res) => {
+const getAllUsers = (req, res) => {
   // (req, res) - route handler function
   res.status(200).json({
     status: 'success',
@@ -130,15 +135,55 @@ const getUsers = (req, res) => {
   });
 };
 
+const createUser = (req, res) => {
+  // (req, res) - route handler function
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is note yet defined',
+  });
+};
+
+const getUser = (req, res) => {
+  // (req, res) - route handler function
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is note yet defined',
+  });
+};
+
+const updateUser = (req, res) => {
+  // (req, res) - route handler function
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is note yet defined',
+  });
+};
+
+const deleteUser = (req, res) => {
+  // (req, res) - route handler function
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is note yet defined',
+  });
+};
+
 // ROUTES
 // New version with chaining requests to route
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
+
 app
   .route('/api/v1/tours/:id')
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
-app.route('/api/v1/users').get(getUsers);
+
+app.route('/api/v1/users').get(getAllUsers).post(createUser);
+
+app
+  .route('/api/v1/users/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 // Old version
 // app.get('/api/v1/tours', getAllTours);
