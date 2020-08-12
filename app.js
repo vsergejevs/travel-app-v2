@@ -4,12 +4,14 @@ const app = express();
 
 app.use(express.json()); // middleware - modifys incoming request data. Here data from the body is added to the request object
 
+// Middleware function
 app.use((req, res, next) => {
   // By adding next function, im telling express that this is going to be a middleware
   console.log('Hello from the middleware');
   next(); // Adding next() and calling it by using () at the end is crucial to complete req, res cycle
 });
 
+// Middleware function
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   console.log(req.requestTime);
