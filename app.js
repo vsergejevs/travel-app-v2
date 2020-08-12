@@ -4,6 +4,18 @@ const app = express();
 
 app.use(express.json()); // middleware - modifys incoming request data. Here data from the body is added to the request object
 
+app.use((req, res, next) => {
+  // By adding next function, im telling express that this is going to be a middleware
+  console.log('Hello from the middleware');
+  next(); // Adding next() and calling it by using () at the end is crucial to complete req, res cycle
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  console.log(req.requestTime);
+  next();
+});
+
 const offlineTours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -19,6 +31,7 @@ const getAllTours = (req, res) => {
   // (req, res) - route handler function
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: offlineTours.length,
     data: {
       tours: offlineTours, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
