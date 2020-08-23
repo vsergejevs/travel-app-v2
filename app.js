@@ -33,7 +33,7 @@ const localUsers = JSON.parse(
 
 // ROUTING
 
-// HANDLER FUNCTIONS
+// HANDLER(controller) FUNCTIONS
 const getAllTours = (req, res) => {
   // (req, res) - route handler function
   res.status(200).json({
@@ -145,9 +145,31 @@ const createUser = (req, res) => {
 
 const getUser = (req, res) => {
   // (req, res) - route handler function
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is note yet defined',
+  // res.status(500).json({
+  //   status: 'error',
+  //   message: 'This route is note yet defined',
+  // });
+
+  console.log(req.params);
+
+  const id = req.params.id * 1; // convert string to number
+
+  // if the URL parameter exceeds the amount of tour objects in json or in database
+  if (id > localUsers.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  const user = localUsers.find((el) => el.id === id); // js find method to search inside array. Here searching for element with specified id in the url parameter
+
+  res.status(200).json({
+    status: 'success',
+    results: localUsers.length,
+    data: {
+      users: user, // in ES6 if a key and value has the same name, only one can be specified
+    },
   });
 };
 
@@ -169,21 +191,14 @@ const deleteUser = (req, res) => {
 
 // ROUTES
 // New version with chaining requests to route
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+const userRouter = express.Router();
 
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
-app
-  .route('/api/v1/users/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+app.use('/api/v1/tours', tourRouter); // Mounting a router (tourRouter) on a route /api/v1/tours
+app.use('/api/v1/users', userRouter);
 
 // Old version
 // app.get('/api/v1/tours', getAllTours);
