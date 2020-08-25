@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter); // Mounting a router (tourRouter) on a route /api/v1/tours
 app.use('/api/v1/users', userRouter);
 
-// Old version
+// OLD VERSION FOR ROUTING - LEAVE FOR REFERENCE
 // app.get('/api/v1/tours', getAllTours);
 // app.post('/api/v1/tours', createTour);
 // app.get('/api/v1/tours/:id', getTour);
