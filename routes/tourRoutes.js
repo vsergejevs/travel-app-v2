@@ -8,7 +8,7 @@ router.param('id', tourController.checkID); // param method searches for the giv
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  .post(tourController.checkBody, tourController.createTour);
 
 router
   .route('/:id')
