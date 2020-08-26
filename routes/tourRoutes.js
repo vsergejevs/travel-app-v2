@@ -3,7 +3,7 @@ const tourController = require('./../controllers/tourController');
 
 const router = express.Router();
 
-router.param('id', tourController.checkID); // param method searched for the given(id) parameter
+router.param('id', tourController.checkID); // param method searches for the given(id) parameter
 
 router
   .route('/')
