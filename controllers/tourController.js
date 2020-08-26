@@ -5,6 +5,16 @@ const offlineTours = JSON.parse(
 );
 
 // HANDLER(controller) FUNCTIONS
+exports.checkBody = (req, res, next) => {
+  if (!req.body.price || !req.body.name) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'body does not contain price or name property',
+    });
+  }
+  next();
+};
+
 exports.checkID = (req, res, next, val) => {
   console.log(`Tour id is: ${val}`);
 
