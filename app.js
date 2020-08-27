@@ -7,7 +7,9 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // MIDDLEWARES
-app.use(morgan('dev')); // middleware to see in console.log information on what requests are made
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev')); // middleware to see in console.log information on what requests are made
+}
 
 app.use(express.json()); // middleware - modifys incoming request data. Here data from the body is added to the request object
 
