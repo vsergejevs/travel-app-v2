@@ -9,19 +9,20 @@ const DB = process.env.DATABASE.replace(
   '<DATABASE_PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
+
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true, // Added this due to error msg
   })
   .then((con) => {
-    console.log(con.connections);
+    //console.log(con.connections);
     console.log('DB connection successful!');
   });
 
-console.log(process.env);
+//console.log(process.env); // this will show all the processes running and also the environmental variables
 
 const port = 3000;
 app.listen(port, () => {
