@@ -63,36 +63,29 @@ exports.getTour = async (req, res) => {
     });
   }
 
+  console.log('URL arameter here is:');
   console.log(req.params);
-
-  const id = req.params.id * 1; // convert string to number
-
-  // if the URL parameter exceeds the amount of tour objects in json or in database
-  // if (id > offlineTours.length) {
-  //   return res.status(404).json({
-  //     status: 'fail',
-  //     message: 'Invalid ID',
-  //   });
-  // }
-
-  // const tour = offlineTours.find((el) => el.id === id); // js find method to search inside array. Here searching for element with specified id in the url parameter
-
-  res.status(200).json({
-    status: 'success',
-    // results: offlineTours.length,
-    // data: {
-    //   tours: tour, // in ES6 if a key and value has the same name, only one can be specified
-    // },
-  });
 };
 
-exports.updateTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here...>',
-    },
-  });
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, //updated document will be returned
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
 exports.deleteTour = (req, res) => {
