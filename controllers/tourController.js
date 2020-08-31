@@ -2,13 +2,27 @@ const Tour = require('./../models/tourModel'); // importing the tourModel.js
 
 // HANDLER(controller) FUNCTIONS
 
-exports.createTour = (req, res) => {
-  res.status(201).json({
-    status: 'success',
-    // data: {
-    //   tour: newTour,
-    // },
-  });
+exports.createTour = async (req, res) => {
+  try {
+    // use try-catch when using an async await function
+
+    const newTour = await Tour.create(req.body);
+    // Tour.create returns a promise that I'm awaiting and I can store the newly created document in newTour variable
+    // then send it with response to the client below in - tour: newTour
+    // if an error occurs - it is being sent back below in catch block
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent',
+    });
+  }
 };
 
 exports.getAllTours = (req, res) => {
