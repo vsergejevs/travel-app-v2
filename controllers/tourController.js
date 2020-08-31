@@ -25,16 +25,25 @@ exports.createTour = async (req, res) => {
   }
 };
 
-exports.getAllTours = (req, res) => {
+exports.getAllTours = async (req, res) => {
   // (req, res) - route handler function
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    // results: offlineTours.length,
-    // data: {
-    //   tours: offlineTours, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
-    // },
-  });
+  try {
+    const tours = await Tour.find();
+
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: tours.length,
+      data: {
+        tours, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
 exports.getTour = (req, res) => {
