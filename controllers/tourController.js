@@ -20,7 +20,7 @@ exports.createTour = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: 'Invalid data sent',
+      message: err,
     });
   }
 };
@@ -28,7 +28,26 @@ exports.createTour = async (req, res) => {
 exports.getAllTours = async (req, res) => {
   // (req, res) - route handler function
   try {
-    const tours = await Tour.find();
+    // create a hard copy of the req.query object using destructuring
+    // it contains all the requested tours from the server
+    const queryObj = { ...req.query };
+
+    // query fields that will be removed fi they appear in the querystring
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+
+    // delete query fields from the queryObj object before
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    console.log(req.query, queryObj);
+
+    // search for all tours in the queryObj instead of req.query
+    const tours = await Tour.find(queryObj);
+
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
 
     res.status(200).json({
       status: 'success',
