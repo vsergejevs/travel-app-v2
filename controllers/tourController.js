@@ -38,17 +38,13 @@ exports.getAllTours = async (req, res) => {
     // delete query fields from the queryObj object before
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    console.log(req.query, queryObj);
+    // search for all tours in the queryObj instead of req.query and save it to query variable
+    const query = Tour.find(queryObj);
 
-    // search for all tours in the queryObj instead of req.query
-    const tours = await Tour.find(queryObj);
+    // EXECUTE QUERY
+    const tours = await query;
 
-    // const tours = await Tour.find()
-    //   .where('duration')
-    //   .equals(5)
-    //   .where('difficulty')
-    //   .equals('easy');
-
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
