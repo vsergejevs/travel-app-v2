@@ -32,10 +32,10 @@ exports.getAllTours = async (req, res) => {
     // it contains all the requested tours from the server
     const queryObj = { ...req.query };
 
-    // query fields that will be removed fi they appear in the querystring
+    // define query fields that will be removed if they appear in the querystring
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
 
-    // delete query fields from the queryObj object before
+    // delete query fields from the queryObj object before searching for querystrings
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // search for all tours in the queryObj instead of req.query and save it to query variable
