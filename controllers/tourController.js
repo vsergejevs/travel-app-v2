@@ -45,8 +45,16 @@ exports.getAllTours = async (req, res) => {
     // replacing the operators using regex and replace() method to add mongodb "$" operator
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    // search for all tours in the queryObj instead of req.query and save it to query variable
-    const query = Tour.find(JSON.parse(queryStr));
+    // search for all tours in the queryStr instead of req.query or queryObj as before and save it to query variable
+    let query = Tour.find(JSON.parse(queryStr));
+
+    // 3) Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
 
     // EXECUTE QUERY
     const tours = await query;
