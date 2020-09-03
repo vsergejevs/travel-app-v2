@@ -1,9 +1,9 @@
 // SERVER
 const mongoose = require('mongoose');
 const dotenv = require('dotenv'); // requiring dotenv package to read from config.env file
-const app = require('./app');
 
 dotenv.config({ path: './config.env' }); // letting node know where env variables are
+const app = require('./app');
 
 const DB = process.env.DATABASE.replace(
   '<DATABASE_PASSWORD>',
