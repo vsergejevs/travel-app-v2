@@ -28,6 +28,7 @@ exports.createTour = async (req, res) => {
 exports.getAllTours = async (req, res) => {
   // (req, res) - route handler function
   try {
+    // 1) FILTERING
     // create a hard copy of the req.query object using destructuring
     // it contains all the requested tours from the server
     const queryObj = { ...req.query };
@@ -38,8 +39,14 @@ exports.getAllTours = async (req, res) => {
     // delete query fields from the queryObj object before searching for querystrings
     excludedFields.forEach((el) => delete queryObj[el]);
 
+    // 2) ADVANCED FILTERING
+    // converting query object to string
+    let queryStr = JSON.stringify(queryObj);
+    // replacing the operators using regex and replace() method to add mongodb "$" operator
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
     // search for all tours in the queryObj instead of req.query and save it to query variable
-    const query = Tour.find(queryObj);
+    const query = Tour.find(JSON.parse(queryStr));
 
     // EXECUTE QUERY
     const tours = await query;
