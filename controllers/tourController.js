@@ -25,8 +25,16 @@ exports.createTour = async (req, res) => {
   }
 };
 
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   // (req, res) - route handler function
+
   try {
     // 1) FILTERING
     // create a hard copy of the req.query object using destructuring
