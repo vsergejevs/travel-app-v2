@@ -15,7 +15,7 @@ class APIFeatures {
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
 
     // delete query fields from the queryObj object before searching for querystrings
-    excludedFields.forEach((el) => delete queryObj[el]);
+    excludedFields.forEach(el => delete queryObj[el]);
 
     // 2) ADVANCED FILTERING
     // converting query object to string
@@ -67,4 +67,5 @@ class APIFeatures {
   }
 
 }
+
 module.exports = APIFeatures;
