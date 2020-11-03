@@ -104,11 +104,21 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
+// Mongoose Query middleware, AKA post find hook
 tourSchema.post(/^find/, function(docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`)
-  console.log(docs);
+  console.log(`Query took ${Date.now() - this.start} milliseconds. This log lives in tourModel.js`)
+  //console.log(docs);
   next();
 })
+
+// Mongoose Aggregation middleware
+// Removing secret tours documents from output when running tour statistics route
+tourSchema.pre('aggregate', function(next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  
+  console.log(this.pipeline());
+  next();
+});
 
 // Mongoose data model
 const Tour = mongoose.model('Tour', tourSchema);
