@@ -58,6 +58,10 @@ const tourSchema = new mongoose.Schema({
     default: Date.now(),
   },
   startDates: [Date],
+  secretTour: {
+    type: Boolean,
+    default: false
+  }
 },
 // Virtual properties object with schema options
 {
@@ -86,6 +90,17 @@ tourSchema.pre('save', function(next) {
 // Mongoose document middleware which creates a slug: runs after .save() and .create()
 tourSchema.post('save', function(doc, next) {
   console.log(doc);
+  next();
+});
+
+// Mongoose Query middleware. AKA pre find hook
+// tourSchema.pre('find', function(next) { - uses 'find' to find all, 
+// but I use regex /^find/ so this middleware runs on findOne, findOneAndDelete, 
+// etc Mongoose query middlewares so that secretTour stays hidden
+tourSchema.pre(/^find/, function(next) {
+  this.find({ secretTour: { $ne: true } });
+  
+  this.start = Date.now();
   next();
 });
 
