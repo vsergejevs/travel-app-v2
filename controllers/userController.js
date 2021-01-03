@@ -1,20 +1,22 @@
-const fs = require('fs'); // filesystem
+const User = require('./../models/userModel'); // importing the tourModel.js
+const catchAsync = require('./../utils/catchAsync');
 
-const localUsers = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/users.json`)
-);
 
 // HANDLER(controller) FUNCTIONS
-exports.getAllUsers = (req, res) => {
-  // (req, res) - route handler function
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+
+  // SEND RESPONSE
   res.status(200).json({
     status: 'success',
-    results: localUsers.length,
+    requestedAt: req.requestTime,
+    results: users.length,
     data: {
-      users: localUsers, // in ES6 if a key and value has the same name, only one can be specified
-    },
+      users, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+    }
   });
-};
+});
 
 exports.createUser = (req, res) => {
   // (req, res) - route handler function
