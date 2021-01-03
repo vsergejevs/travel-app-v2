@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Please provide a password'],
-    minlength: 8
+    minlength: 8,
+    select: false
   },
   passwordConfirm: {
     type: String,
@@ -45,6 +46,17 @@ userSchema.pre('save', async function(next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+// Method for login middleware in authController.js 
+// compares password that user inputs with what is stored in DB
+// It is an instance method It is available on all documents on a certain collection
+// Google Search: mongoose instance methods
+// candidatePassword is the one that user inputs
+// userPassword is the one stored in DB
+// function returns true or false
+userSchema.methods.correctPassword = function(candidatePassword, userPassword) {
+  return bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
