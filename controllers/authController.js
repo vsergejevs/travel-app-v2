@@ -11,6 +11,8 @@ const signToken = id => {
   });
 };
 
+// Middleware functions below
+
 exports.signup = catchAsync(async (req, res, next) => {
   
   const newUser = await User.create({
@@ -56,3 +58,14 @@ exports.login = catchAsync(async (req, res, next) => {
 
 });
 
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Getting token and check if it's there
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer'))
+  {token = req.headers.authorization.split(' ')[1];}
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401)
+    );
+  }
+});
