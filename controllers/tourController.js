@@ -3,7 +3,6 @@ const APIFeatures = require('./../utils/APIFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-
 // HANDLER(controller) FUNCTIONS
 
 exports.aliasTopTours = (req, res, next) => {
