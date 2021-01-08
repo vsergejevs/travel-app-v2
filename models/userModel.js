@@ -31,7 +31,8 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Passwords are not the same'
     }
-  }
+  },
+  passwordChangedAt: Date
 });
 
 // Pre hook middleware
@@ -56,6 +57,25 @@ userSchema.pre('save', async function(next) {
 // function returns true or false
 userSchema.methods.correctPassword = function(candidatePassword, userPassword) {
   return bcrypt.compare(candidatePassword, userPassword);
+};
+
+// Instance method. It is available on all documents on a certain collection
+// Checking has the user changed password after JWT token has been issued, 
+// if so, access will be denied, user has to log in again
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+  console.log('This log lives in userModel.js');
+  console.log(this.passwordChangedAt);
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means NOT changed
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
