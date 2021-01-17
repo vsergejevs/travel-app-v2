@@ -56,6 +56,14 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+// Change the passwordChangedAt field in user schema
+userSchema.pre('save', function(next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 // Method for login middleware in authController.js 
 // compares password that user inputs with what is stored in DB
 // It is an instance method It is available on all documents on a certain collection
