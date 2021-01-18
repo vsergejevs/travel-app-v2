@@ -195,8 +195,4 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // 4) Log user in, send JWT
   createSendToken(user, 200, res);
 
-  // augšā uztaisīja funkciju createSendToken()
-  // userRoutes.js uztaisīja jaunu router
-  // Postman uztaisīja jaunu request - PATCH updateMyPassword ar dažādām parolēm json body un authorization jā'bem bearer token
-
 })
