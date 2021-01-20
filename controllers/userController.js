@@ -2,14 +2,14 @@ const User = require('./../models/userModel'); // importing the tourModel.js
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
+// Function to filter out which fields can be updated only
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach(el => {
     if (allowedFields.includes(el)) newObj[el] = obj[el];
   });
-  return newObj
+  return newObj;
 };
-
 
 // HANDLER(controller) FUNCTIONS
 exports.getAllUsers = catchAsync(async (req, res, next) => {
@@ -87,6 +87,18 @@ exports.getUser = (req, res) => {
     },
   });
 };
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null
+  });
+});
+
+
+
 
 exports.updateUser = (req, res) => {
   // (req, res) - route handler function
