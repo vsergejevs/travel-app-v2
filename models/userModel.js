@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
+  }
 });
 
 // Pre hook middleware
@@ -71,8 +76,8 @@ userSchema.pre('save', function(next) {
 // candidatePassword is the one that user inputs
 // userPassword is the one stored in DB
 // function returns true or false
-userSchema.methods.correctPassword = function(candidatePassword, userPassword) {
-  return bcrypt.compare(candidatePassword, userPassword);
+userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
+  return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 // Instance method. It is available on all documents on a certain collection
@@ -105,7 +110,7 @@ userSchema.methods.createPasswordResetToken = function() {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
-}
+};
 
 const User = mongoose.model('User', userSchema);
 
