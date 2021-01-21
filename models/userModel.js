@@ -69,6 +69,12 @@ userSchema.pre('save', function(next) {
   next();
 });
 
+userSchema.pre(/^find/, function(next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 // Method for login middleware in authController.js 
 // compares password that user inputs with what is stored in DB
 // It is an instance method It is available on all documents on a certain collection
