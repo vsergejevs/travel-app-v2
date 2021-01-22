@@ -14,8 +14,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev')); // middleware to see in console.log information on what requests are made
 }
 
+// Limits amount of requests from one IP, currently set to 100
 const limiter = rateLimit({
-  max: 3,
+  max: 100,
   windowMs: 60 * 60 * 1000,
   message: 'Too manu requests from this IP, please try again in an hour!'
 });
