@@ -106,6 +106,7 @@ const tourSchema = new mongoose.Schema({
       day: Number
     }
   ],
+  // Referencing tour guide ids
   guides: [
     {
       type: mongoose.Schema.ObjectId,
@@ -154,12 +155,21 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
+tourSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
+  
+  next();
+});
+
 // Mongoose Query middleware, AKA post find hook
 tourSchema.post(/^find/, function(docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds. This log lives in tourModel.js`)
   //console.log(docs);
   next();
-})
+});
 
 // Mongoose Aggregation middleware
 // Removing secret tours documents from output when running tour statistics route
