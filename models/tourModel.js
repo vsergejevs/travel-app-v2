@@ -125,6 +125,13 @@ tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
 
+// Virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+});
+
 // Mongoose document middleware which creates a slug: runs before .save() and .create() 
 // AKA pre save hook
 tourSchema.pre('save', function(next) {
