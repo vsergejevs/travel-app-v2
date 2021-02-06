@@ -33,3 +33,18 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
     },
   });
 });
+
+
+exports.createOne = Model => catchAsync(async (req, res, next) => {
+  const doc = await Model.create(req.body);
+  // Tour.create returns a promise that I'm awaiting and I can store the newly created document in doc variable
+  // then send it with response to the client below in - tour: doc
+  // if an error occurs - it is being sent back from the catchAsync error catch
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: doc,
+    }
+  });
+});
