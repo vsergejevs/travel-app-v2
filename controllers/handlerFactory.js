@@ -48,3 +48,24 @@ exports.createOne = Model => catchAsync(async (req, res, next) => {
     }
   });
 });
+
+
+exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
+  let query = Model.findById(req.params.id);
+  if (popOptions) query = query.populate(popOptions);
+  const doc = await query;
+
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: doc // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+    },
+  });
+
+  console.log('URL arameter here is:');
+  console.log(req.params);
+});
