@@ -1,6 +1,7 @@
 const express = require('express');
 const reviewController = require('./../controllers/reviewController');
 const authController = require('./../controllers/authController');
+const Review = require('../models/reviewModel');
 
 // Need to access the parameter of tourId in tourRoutes.js
 const router = express.Router({ mergeParams: true });
@@ -29,6 +30,7 @@ router
 
 router
   .route('/:id')
+  .get(reviewController.getReview)
   .patch(reviewController.updateReview)
   .delete(reviewController.deleteReview);
 
