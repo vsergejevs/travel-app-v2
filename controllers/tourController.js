@@ -34,23 +34,25 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate('reviews');
+exports.getTour = factory.getOne(Tour);
 
-  if(!tour) {
-    return next(new AppError('No tour found with that ID', 404))
-  }
+// exports.getTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findById(req.params.id).populate('reviews');
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
-    },
-  });
+//   if(!tour) {
+//     return next(new AppError('No tour found with that ID', 404))
+//   }
 
-  console.log('URL arameter here is:');
-  console.log(req.params);
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       tour, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+//     },
+//   });
+
+//   console.log('URL arameter here is:');
+//   console.log(req.params);
+// });
 
 exports.createTour = factory.createOne(Tour);
 
