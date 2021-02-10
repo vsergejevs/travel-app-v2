@@ -1,5 +1,6 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appError');
+const APIFeatures = require('./../utils/APIFeatures');
 
 
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {
@@ -68,4 +69,31 @@ exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
 
   console.log('URL arameter here is:');
   console.log(req.params);
+});
+
+
+exports.getAll = Model => catchAsync(async (req, res, next) => {
+
+  // To allow for nested get reviews on tour (hack)
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
+  // EXECUTE QUERY
+  const features = new APIFeatures(Model.find(filter), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const doc = await features.query;
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
+    results: doc.length,
+    data: {
+      data: doc, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+    },
+  });
+
 });
