@@ -65,7 +65,7 @@ reviewSchema.statics.calcAverageRatings = async function(tourId) {
       }
     }
   ])
-  console.log(stats);
+  // console.log(stats);
 
   // save statistics to the current tour
   if (stats.length > 0) {
@@ -86,9 +86,12 @@ reviewSchema.post('save', function(next) {
   this.constructor.calcAverageRatings(this.tour);
 });
 
+// Prevent users from writing multiple reviews on the same tour
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^findOneAnd/, async function(next) {
   this.r = await this.findOne();
-  console.log(this.r);
+  // console.log(this.r);
 });
 
 reviewSchema.post(/^findOneAnd/, async function() {
