@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,7 +15,17 @@ const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
+// Setting html template engine
+app.set('view engine', 'pug');
+
+// Pug templates are called views
+app.set('views', path.join(__dirname, 'views'));
+
 // GLOBAL MIDDLEWARES
+
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Set security HTTP headers
 app.use(helmet());
 
@@ -61,9 +72,6 @@ app.use(
   })
 );
 
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // Middleware function to console.log the time when a request is being made
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
@@ -73,7 +81,12 @@ app.use((req, res, next) => {
 });
 
 // ROUTES now moved to seperate file/folder below is route starting points
+// Template routes
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
 
+// API routes
 app.use('/api/v1/tours', tourRouter); // Mounting a router (tourRouter) on a route /api/v1/tours
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
