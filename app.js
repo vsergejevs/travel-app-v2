@@ -23,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // GLOBAL MIDDLEWARES
 
-// Serving static files
+// Serving static files - css, images.
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
@@ -83,7 +83,10 @@ app.use((req, res, next) => {
 // ROUTES now moved to seperate file/folder below is route starting points
 // Template routes
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  res.status(200).render('base', {
+    tour: 'the forest hiker',
+    user: 'jonas'
+  });
 });
 
 // API routes
