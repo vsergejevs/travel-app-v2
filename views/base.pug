@@ -1,17 +1,21 @@
 doctype html
 html
-  head
-    //- # hash makes the string in curly braces to be treated as javascript
-    title Natours | #{tour}
+  head 
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
     link(rel='stylesheet' href='css/style.css')
     link(rel='shortcut icon' type='image/png' href='img/favicon.png')
-  
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+    title Natours | Exciting tours for adventurous people
+
   body
-    //- = double slashes make the string to be treated as javascript
-    h1= tour
-    h2= user.toUpperCase()
-    //- comment that does not get rendered on the web page as a comment
-    // simple comment
-    - const x = 9;
-    h2= 2 * x
-    p This is test text
+    // HEADER
+    include _header
+
+    // CONTENT
+    section.overview
+      h1= tour
+
+    // FOOTER
+    include _footer
+
