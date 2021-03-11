@@ -126,6 +126,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get distances to tours from point
 exports.getDistances = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params; // using object destructuring here https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring 
   const [lat, lng] = latlng.split(',');
