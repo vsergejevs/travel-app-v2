@@ -12,6 +12,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
@@ -81,27 +82,9 @@ app.use((req, res, next) => {
 });
 
 // ROUTES now moved to seperate file/folder below is route starting points
-// Template routes
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    tour: 'the forest hiker',
-    user: 'jonas'
-  });
-});
-
-app.get('/overview', (req, res) => {
-  res.status(200).render('overview', {
-    title: 'All Tours'
-  });
-});
-
-app.get('/tour', (req, res) => {
-  res.status(200).render('tour', {
-    title: 'The forest hiker Tour'
-  });
-});
 
 // API routes
+app.use('/', viewRouter); // Mounting a router (tourRouter) on a route /api/v1/tours
 app.use('/api/v1/tours', tourRouter); // Mounting a router (tourRouter) on a route /api/v1/tours
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
