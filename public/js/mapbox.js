@@ -1,7 +1,8 @@
 const locations = JSON.parse(document.getElementById('map').dataset.locations);
 console.log(locations + ' This log lives in mapbox.js');
 
-mapboxgl.accessToken = 'pk.eyJ1IjoidnNlcmdleWV2IiwiYSI6ImNrbWY5ZHVkMDB1aHUycnA1b2hyMmhoYWEifQ.kDNxctFydEwGgwnWkWfLyg';
+mapboxgl.accessToken =
+  'pk.eyJ1IjoidnNlcmdleWV2IiwiYSI6ImNrbWY5ZHVkMDB1aHUycnA1b2hyMmhoYWEifQ.kDNxctFydEwGgwnWkWfLyg';
 
 var map = new mapboxgl.Map({
   container: 'map',
@@ -11,21 +12,36 @@ var map = new mapboxgl.Map({
 });
 
 // figure out position of the map based on tour location points, bounds will be the area displayed on the map
-const bounds = new mapboxgl.LatLngBounds();
+const bounds = new mapboxgl.LngLatBounds();
 
-locations.forEach(loc => {
+locations.forEach((loc) => {
   // Create marker
   const el = document.createElement('div');
   el.className = 'marker';
-  
+
   // Add marker
   new mapboxgl.Marker({
     element: el,
-    anchor: 'bottom'
-  }).setLngLat(loc.coordinates).addTo(map);
+    anchor: 'bottom',
+  })
+    .setLngLat(loc.coordinates)
+    .addTo(map);
+
+  // Add popup
+  new mapboxgl.Popup()
+    .setLngLat(loc.coordinates)
+    .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+    .addTo(map);
 
   // Extend map bounds to include current location
   bounds.extend(loc.coordinates);
 });
 
-map.fitBounds(bounds)
+map.fitBounds(bounds, {
+  padding: {
+    top: 200,
+    bottom: 200,
+    left: 100,
+    right: 100,
+  },
+});
