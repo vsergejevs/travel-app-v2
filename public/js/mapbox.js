@@ -7,8 +7,7 @@ mapboxgl.accessToken =
 var map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/vsergeyev/ckmfw7xsyo6bz17l90vh2tjpt',
-  // center: [-122.29286, 38.294065],
-  // zoom: 5
+  scrollZoom: false,
 });
 
 // figure out position of the map based on tour location points, bounds will be the area displayed on the map
@@ -28,7 +27,9 @@ locations.forEach((loc) => {
     .addTo(map);
 
   // Add popup
-  new mapboxgl.Popup()
+  new mapboxgl.Popup({
+    offset: 30,
+  })
     .setLngLat(loc.coordinates)
     .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
     .addTo(map);
@@ -40,7 +41,7 @@ locations.forEach((loc) => {
 map.fitBounds(bounds, {
   padding: {
     top: 200,
-    bottom: 200,
+    bottom: 150,
     left: 100,
     right: 100,
   },
