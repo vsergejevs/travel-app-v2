@@ -6,6 +6,8 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+// const csp = require('express-csp'); - was testing to fix a bug, leaving for later reference
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -30,11 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set security HTTP headers
 // app.use(helmet());
 app.use(
-
   helmet.contentSecurityPolicy({
-
     directives: {
-
       defaultSrc: ["'self'", 'data:', 'blob:'],
 
       baseUri: ["'self'"],
@@ -61,14 +60,10 @@ app.use(
 
       connectSrc: ["'self'", 'blob:', 'https://*.mapbox.com'],
 
-      upgradeInsecureRequests: []
-
-    }
-
+      upgradeInsecureRequests: [],
+    },
   })
-
 );
-
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -79,12 +74,13 @@ if (process.env.NODE_ENV === 'development') {
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
-  message: 'Too manu requests from this IP, please try again in an hour!'
+  message: 'Too manu requests from this IP, please try again in an hour!',
 });
 app.use('/api', limiter);
 
 // Body parser
 app.use(express.json({ limit: '10kb' })); // middleware - modifys incoming request data. Here data from the body is added to the request object
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -108,8 +104,8 @@ app.use(
       'ratingsAverage',
       'maxGroupSize',
       'difficulty',
-      'price'
-    ]
+      'price',
+    ],
   })
 );
 
@@ -117,7 +113,7 @@ app.use(
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   console.log(req.requestTime + ' This log lives in app.js');
-  //console.log(req.headers);
+  console.log(req.cookies);
   next();
 });
 
@@ -136,5 +132,73 @@ app.all('*', (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
+
+// express - csp;
+// testing to fix a bug
+// csp.extend(app, {
+//   policy: {
+//     directives: {
+//       'default-src': ['self'],
+//       'style-src': ['self', 'unsafe-inline', 'https:'],
+//       'font-src': ['self', 'https://fonts.gstatic.com'],
+//       'script-src': [
+//         'self',
+//         'unsafe-inline',
+//         'data',
+//         'blob',
+//         'https://js.stripe.com',
+//         'https://*.mapbox.com',
+//         'https://*.cloudflare.com/',
+//         'https://bundle.js:8828',
+//         'ws://localhost:56558/',
+//       ],
+//       'worker-src': [
+//         'self',
+//         'unsafe-inline',
+//         'data:',
+//         'blob:',
+//         'https://*.stripe.com',
+//         'https://*.mapbox.com',
+//         'https://*.cloudflare.com/',
+//         'https://bundle.js:*',
+//         'ws://localhost:*/',
+//       ],
+//       'frame-src': [
+//         'self',
+//         'unsafe-inline',
+//         'data:',
+//         'blob:',
+//         'https://*.stripe.com',
+//         'https://*.mapbox.com',
+//         'https://*.cloudflare.com/',
+//         'https://bundle.js:*',
+//         'ws://localhost:*/',
+//       ],
+//       'img-src': [
+//         'self',
+//         'unsafe-inline',
+//         'data:',
+//         'blob:',
+//         'https://*.stripe.com',
+//         'https://*.mapbox.com',
+//         'https://*.cloudflare.com/',
+//         'https://bundle.js:*',
+//         'ws://localhost:*/',
+//       ],
+//       'connect-src': [
+//         'self',
+//         'unsafe-inline',
+//         'data:',
+//         'blob:',
+//         // 'wss://<HEROKU-SUBDOMAIN>.herokuapp.com:<PORT>/',
+//         'https://*.stripe.com',
+//         'https://*.mapbox.com',
+//         'https://*.cloudflare.com/',
+//         'https://bundle.js:*',
+//         'ws://localhost:*/',
+//       ],
+//     },
+//   },
+// });
 
 module.exports = app;
