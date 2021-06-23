@@ -6,37 +6,37 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please tell us your name!']
+    required: [true, 'Please tell us your name!'],
   },
   email: {
     type: String,
     required: [true, 'Please provide your email'],
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail, 'Please provide a valid email']
+    validate: [validator.isEmail, 'Please provide a valid email'],
   },
   photo: String,
   role: {
     type: String,
     enum: ['user', 'guide', 'lead-guide', 'admin'],
-    default: 'user'
+    default: 'user',
   },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
     minlength: 8,
-    select: false
+    select: false,
   },
   passwordConfirm: {
     type: String,
     required: [true, 'Please confirm your password'],
     validate: {
       // This only works on CREATE and SAVE!!
-      validator: function(el) {
+      validator: function (el) {
         return el === this.password;
       },
-      message: 'Passwords are not the same'
-    }
+      message: 'Passwords are not the same',
+    },
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
@@ -44,12 +44,12 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-    select: false
-  }
+    select: false,
+  },
 });
 
 // Pre hook middleware
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
 
@@ -62,35 +62,38 @@ userSchema.pre('save', async function(next) {
 });
 
 // Change the passwordChangedAt field in user schema
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
-userSchema.pre(/^find/, function(next) {
+userSchema.pre(/^find/, function (next) {
   // this points to the current query
   this.find({ active: { $ne: false } });
   next();
 });
 
-// Method for login middleware in authController.js 
+// Method for login middleware in authController.js
 // compares password that user inputs with what is stored in DB
 // It is an instance method It is available on all documents on a certain collection
 // Google Search: mongoose instance methods
 // candidatePassword is the one that user inputs
 // userPassword is the one stored in DB
 // function returns true or false
-userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 // Instance method. It is available on all documents on a certain collection
-// Checking has the user changed password after JWT token has been issued, 
+// Checking has the user changed password after JWT token has been issued,
 // if so, access will be denied, user has to log in again
-userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
-  console.log('This log lives in userModel.js');
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  console.log('Below console.log lives in userModel.js');
   console.log(this.passwordChangedAt);
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
@@ -106,10 +109,13 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
 };
 
 // Instance method. It is available on all documents on a certain collection
-userSchema.methods.createPasswordResetToken = function() {
+userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
 
   console.log({ resetToken }, this.passwordResetToken);
 
