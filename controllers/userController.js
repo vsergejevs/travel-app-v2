@@ -6,7 +6,7 @@ const factory = require('./handlerFactory');
 // Function to filter out which fields can be updated only
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
-  Object.keys(obj).forEach(el => {
+  Object.keys(obj).forEach((el) => {
     if (allowedFields.includes(el)) newObj[el] = obj[el];
   });
   return newObj;
@@ -21,10 +21,15 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
+  console.log(req.file);
+  console.log(req.body);
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
-      new AppError('This route is not for password updates. Please use /updateMyPassword.', 400)
+      new AppError(
+        'This route is not for password updates. Please use /updateMyPassword.',
+        400
+      )
     );
   }
   // 2) Filtered out unwanted field names that are not allowed to be updated
@@ -33,13 +38,13 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
   res.status(200).json({
     status: 'success',
     data: {
-      user: updatedUser
-    }
+      user: updatedUser,
+    },
   });
 });
 
@@ -58,7 +63,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 
   res.status(204).json({
     status: 'success',
-    data: null
+    data: null,
   });
 });
 
