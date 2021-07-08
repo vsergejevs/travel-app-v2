@@ -25,7 +25,7 @@ const multerFilter = (req, file, cb) => {
     cb(new AppError('Not an image! Please upload only images.', 400), false);
   }
 };
-
+// test comment
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
