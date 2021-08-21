@@ -93,8 +93,8 @@ userSchema.methods.correctPassword = async function (
 // Checking has the user changed password after JWT token has been issued,
 // if so, access will be denied, user has to log in again
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
-  console.log('Below console.log lives in userModel.js');
-  console.log(this.passwordChangedAt);
+  // console.log('Below console.log lives in userModel.js');
+  // console.log(this.passwordChangedAt);
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
