@@ -57,7 +57,7 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
       req.body.images.push(filename);
     })
   );
-  console.log(req.body);
+  // console.log(req.body);
   next();
 });
 
@@ -171,7 +171,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     );
   }
   // Check data
-  console.log(distance, lat, lng, unit);
+  // console.log(distance, lat, lng, unit);
 
   // Find documents within a certain distance of a starting point
   const tours = await Tour.find({

@@ -2,99 +2,97 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('./../utils/APIFeatures');
 
+exports.deleteOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndDelete(req.params.id);
 
-exports.deleteOne = Model => catchAsync(async (req, res, next) => {
-  const doc = await Model.findByIdAndDelete(req.params.id);
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404))
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
-
-
-exports.updateOne = Model => catchAsync(async (req, res, next) => {
-  const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
-    new: true, //updated doc will be returned
-    runValidators: true,
-  });
-
-  if(!doc) {
-    return next(new AppError('No document found with that ID', 404))
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      data: doc
-    },
-  });
-});
-
-
-exports.createOne = Model => catchAsync(async (req, res, next) => {
-  const doc = await Model.create(req.body);
-  // Tour.create returns a promise that I'm awaiting and I can store the newly created document in doc variable
-  // then send it with response to the client below in - tour: doc
-  // if an error occurs - it is being sent back from the catchAsync error catch
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      data: doc,
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
     }
-  });
-});
 
-
-exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
-  let query = Model.findById(req.params.id);
-  if (popOptions) query = query.populate(popOptions);
-  const doc = await query;
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404))
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      data: doc // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
-    },
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
   });
 
-  console.log('URL arameter here is:');
-  console.log(req.params);
-});
+exports.updateOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, //updated doc will be returned
+      runValidators: true,
+    });
 
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
+    }
 
-exports.getAll = Model => catchAsync(async (req, res, next) => {
-
-  // To allow for nested get reviews on tour (hack)
-  let filter = {};
-  if (req.params.tourId) filter = { tour: req.params.tourId };
-
-  // EXECUTE QUERY
-  const features = new APIFeatures(Model.find(filter), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const doc = await features.query;
-  // const doc = await features.query.explain();
-
-  // SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: doc.length,
-    data: {
-      data: doc, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
-    },
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc,
+      },
+    });
   });
 
-});
+exports.createOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.create(req.body);
+    // Tour.create returns a promise that I'm awaiting and I can store the newly created document in doc variable
+    // then send it with response to the client below in - tour: doc
+    // if an error occurs - it is being sent back from the catchAsync error catch
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        data: doc,
+      },
+    });
+  });
+
+exports.getOne = (Model, popOptions) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (popOptions) query = query.populate(popOptions);
+    const doc = await query;
+
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+      },
+    });
+
+    // console.log('URL arameter here is:');
+    // console.log(req.params);
+  });
+
+exports.getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    // To allow for nested get reviews on tour (hack)
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    // EXECUTE QUERY
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const doc = await features.query;
+    // const doc = await features.query.explain();
+
+    // SEND RESPONSE
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: doc.length,
+      data: {
+        data: doc, // in ES6 if a key and value has the same name, only one can be specified e.g. tours: tours
+      },
+    });
+  });
