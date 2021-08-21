@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 // const csp = require('express-csp'); - was testing to fix a bug, leaving for later reference
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -93,7 +94,7 @@ app.use(xss());
 // Middleware function to say hello - for fun
 app.use((req, res, next) => {
   // By adding next function, im telling express that this is going to be a middleware
-  console.log('Hello from the middleware This log lives in app.js');
+  // console.log('Hello from the middleware This log lives in app.js');
   next(); // Adding next() and calling it by using () at the end is crucial to complete req, res cycle
 });
 
@@ -111,10 +112,12 @@ app.use(
   })
 );
 
+app.use(compression());
+
 // Middleware function to console.log the time when a request is being made
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.requestTime + ' This log lives in app.js');
+  // console.log(req.requestTime + ' This log lives in app.js');
   // console.log(req.cookies);
   next();
 });
