@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
-
+//fd
 router.get(
   '/',
   bookingController.createBookingCheckout,
