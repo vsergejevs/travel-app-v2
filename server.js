@@ -30,7 +30,7 @@ mongoose
 
 //console.log(process.env); // this will show all the processes running and also the environmental variables
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 const server = app.listen(port, () => {
   console.log(`App running on port ${port}. This log lives in server.js`);
 });
