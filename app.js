@@ -17,8 +17,11 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
-//f
+
+//start express app
 const app = express();
+
+app.enable('trust proxy');
 
 // Setting html template engine
 app.set('view engine', 'pug');
