@@ -2,9 +2,9 @@ name: Lint Code Base
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ['master']
   pull_request:
-    branches: [ "master" ]
+    branches: ['master']
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -19,5 +19,18 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "master"
+          DEFAULT_BRANCH: 'master'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  teams-notification:
+    steps:
+      - name: Send a message to Microsoft Teams
+        uses: aliencube/microsoft-teams-actions@v0.8.0
+        if: ${{ failure() }}
+        with:
+          webhook_uri: https://studentstsi.webhook.office.com/webhookb2/90da8d91-27c0-44fc-b17b-dac99eaa0ca4@1d7aff63-80a5-4985-8960-f1556fe5114d/IncomingWebhook/722c6fb590374e58a5bbb300b9ca8853/1fa4730d-d9b8-4c3c-afbe-86161fddc2cc
+          title: <Something failed>
+          summary: <Message Summary that something failed>
+          text: <Message Text that something failed>
+          theme_color: <Message Theme Color>
+          sections: '[{ "activityTitle": "hello world" }, { ... }]'
+          actions: '[{ "@type": "OpenUri", "name": "lorem ipsum", "targets": [{ "os": "default", "uri": "https://localhost" }] }, { ... }]'
