@@ -28,7 +28,7 @@ jobs:
         run: echo hello from another job
   teams-notification:
     runs-on: ubuntu-latest
-    needs: [run-lint]
+    needs: [run-lint, display-message]
     if: ${{ failure() }}
     steps:
       - name: Send a message to Microsoft Teams
