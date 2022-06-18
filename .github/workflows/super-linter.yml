@@ -21,6 +21,11 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: 'master'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  display-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display a message
+        run: echo hello from another job
   teams-notification:
     runs-on: ubuntu-latest
     needs: [run-lint]
