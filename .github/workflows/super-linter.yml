@@ -34,5 +34,5 @@ jobs:
           summary: <Message Summary that something failed>
           text: <Message Text that something failed>
           theme_color: <Message Theme Color>
-          sections: '[{ "activityTitle": "hello world" }, { ... }]'
+          sections: '[{ "activityTitle": "hello world" }]'
           actions: '[{ "@type": "OpenUri", "name": "lorem ipsum", "targets": [{ "os": "default", "uri": "https://localhost" }]}]'
