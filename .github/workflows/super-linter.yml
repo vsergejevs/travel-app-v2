@@ -23,11 +23,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   teams-notification:
     runs-on: ubuntu-latest
+    needs: [run-lint]
+    if: ${{ failure() }}
     steps:
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
-        needs: [run-lint]
-        if: ${{ failure() }}
         with:
           webhook_uri: https://studentstsi.webhook.office.com/webhookb2/90da8d91-27c0-44fc-b17b-dac99eaa0ca4@1d7aff63-80a5-4985-8960-f1556fe5114d/IncomingWebhook/722c6fb590374e58a5bbb300b9ca8853/1fa4730d-d9b8-4c3c-afbe-86161fddc2cc
           title: <Something failed>
